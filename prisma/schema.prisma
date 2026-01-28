@@ -1,0 +1,161 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+// Admin user for authentication
+model AdminUser {
+    id        Int      @id @default(autoincrement())
+    email     String   @unique
+    password  String // bcrypt hashed
+    name      String
+    role      String   @default("admin")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("admin_users")
+}
+
+// Hero section content
+model HeroContent {
+    id          Int      @id @default(autoincrement())
+    headline    String   @db.VarChar(255)
+    subheadline String   @db.Text
+    ctaText     String   @db.VarChar(100)
+    ctaLink     String   @db.VarChar(500)
+    bgImageUrl  String   @db.VarChar(500)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@map("hero_content")
+}
+
+// Properties for featured section
+model Property {
+    id           Int      @id @default(autoincrement())
+    title        String   @db.VarChar(255)
+    description  String?  @db.Text
+    price        Float
+    location     String   @db.VarChar(255)
+    imageUrl     String   @db.VarChar(500)
+    isFeatured   Boolean  @default(false)
+    propertyType String   @db.VarChar(100) // e.g., "Apartment", "House", "Commercial"
+    bedrooms     Int?
+    bathrooms    Int?
+    area         Float? // in sq ft
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    @@index([isFeatured])
+    @@map("properties")
+}
+
+// Dynamic landing page sections
+model LandingSection {
+    id         Int      @id @default(autoincrement())
+    sectionKey String   @unique @db.VarChar(100) // e.g., "hero", "featured", "beforeAfter"
+    title      String   @db.VarChar(255)
+    isVisible  Boolean  @default(true)
+    order      Int      @default(0)
+    content    Json? // Flexible JSON for section-specific content
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@index([order])
+    @@map("landing_sections")
+}
+
+// Trust partners (logos or text)
+model TrustPartner {
+    id          Int      @id @default(autoincrement())
+    name        String   @db.VarChar(255)
+    logoUrl     String?  @db.VarChar(500) // Optional logo image
+    isTextBased Boolean  @default(false) // If true, display name as styled text
+    isVisible   Boolean  @default(true)
+    order       Int      @default(0)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([order])
+    @@map("trust_partners")
+}
+
+// Before & After transformations
+model BeforeAfter {
+    id             Int      @id @default(autoincrement())
+    title          String   @db.VarChar(255)
+    description    String?  @db.Text
+    beforeImageUrl String   @db.VarChar(500)
+    afterImageUrl  String   @db.VarChar(500)
+    isVisible      Boolean  @default(true)
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    @@map("before_after")
+}
+
+// ROI Configuration for property types
+model RoiConfig {
+    id               Int      @id @default(autoincrement())
+    propertyType     String   @unique @db.VarChar(100) // "Building", "Shop", "Plot", "Commercial"
+    roiPercentageMin Float // Minimum ROI percentage
+    roiPercentageMax Float // Maximum ROI percentage
+    imageUrl         String   @db.VarChar(500) // Image for this property type
+    disclaimerText   String?  @db.Text // Optional disclaimer
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
+
+    @@map("roi_config")
+}
+
+// CTA Section content
+model CTASection {
+    id             Int      @id @default(autoincrement())
+    heading        String   @db.VarChar(255)
+    subheading     String?  @db.Text
+    ctaText        String   @db.VarChar(100)
+    ctaLink        String   @db.VarChar(500)
+    whatsappNumber String?  @db.VarChar(20)
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    @@map("cta_section")
+}
+
+// Marquee settings
+model MarqueeSettings {
+    id        Int      @id @default(autoincrement())
+    isEnabled Boolean  @default(true)
+    speed     Int      @default(50) // Speed in pixels per second
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("marquee_settings")
+}
+
+// Case Studies / Previous Work
+model CaseStudy {
+    id           Int      @id @default(autoincrement())
+    title        String   @db.VarChar(255)
+    location     String   @db.VarChar(255) // e.g., "Mumbai, Maharashtra"
+    category     String   @db.VarChar(50) // "Residential", "Commercial", "Plot", "Villa"
+    description  String   @db.Text // 1-2 lines, outcome-focused
+    imageUrl     String   @db.VarChar(500)
+    year         Int // Completion year
+    status       String   @db.VarChar(50) // "Completed" or "Ongoing"
+    isVisible    Boolean  @default(true)
+    displayOrder Int      @default(0)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    @@index([displayOrder])
+    @@index([isVisible])
+    @@map("case_studies")
+}
