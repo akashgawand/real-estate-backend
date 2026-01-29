@@ -19,15 +19,32 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get featured properties (public)
+// Get featured properties (public) - mapped to Project interface
 router.get('/featured', async (req, res) => {
     try {
         const properties = await prisma.property.findMany({
             where: { isFeatured: true },
             orderBy: { createdAt: 'desc' },
-            take: 6,
         });
-        res.json(properties);
+
+        // Map to Project interface expected by frontend
+        const projects = properties.map(property => {
+            // Compute status based on creation date (recent = Ongoing, older = Completed)
+            const monthsOld = (Date.now() - new Date(property.createdAt).getTime()) / (1000 * 60 * 60 * 24 * 30);
+            const status = monthsOld < 6 ? 'Ongoing' : 'Completed';
+
+            return {
+                id: property.id,
+                title: property.title,
+                description: property.description || '',
+                location: property.location,
+                imageUrl: property.imageUrl,
+                projectType: property.propertyType, // Map propertyType to projectType
+                status: status,
+            };
+        });
+
+        res.json(projects);
     } catch (error) {
         console.error('Get featured properties error:', error);
         res.status(500).json({ error: { message: 'Failed to fetch featured properties' } });
