@@ -103,12 +103,13 @@ async function main() {
     // Create landing sections
     const sections = [
         { sectionKey: 'hero', title: 'Hero Section', isVisible: true, order: 0 },
-        { sectionKey: 'previousWork', title: 'Previous Work', isVisible: true, order: 1 },
-        { sectionKey: 'featured', title: 'Featured Properties', isVisible: true, order: 2 },
-        { sectionKey: 'beforeAfter', title: 'Transformations', isVisible: true, order: 3 },
-        { sectionKey: 'roiEstimator', title: 'ROI Estimator', isVisible: true, order: 4 },
-        { sectionKey: 'trust', title: 'Trust Partners', isVisible: true, order: 5 },
-        { sectionKey: 'cta', title: 'Call to Action', isVisible: true, order: 6 },
+        { sectionKey: 'about', title: 'About Section', isVisible: true, order: 1 },
+        { sectionKey: 'previousWork', title: 'Previous Work', isVisible: true, order: 2 },
+        { sectionKey: 'featured', title: 'Featured Properties', isVisible: true, order: 3 },
+        { sectionKey: 'beforeAfter', title: 'Transformations', isVisible: true, order: 4 },
+        { sectionKey: 'roiEstimator', title: 'ROI Estimator', isVisible: true, order: 5 },
+        { sectionKey: 'trust', title: 'Trust Partners', isVisible: true, order: 6 },
+        { sectionKey: 'cta', title: 'Call to Action', isVisible: true, order: 7 },
     ];
 
     for (const section of sections) {
